@@ -306,7 +306,7 @@ private:
 };
 ```
 
-`class3` takes a list of map keys (`GROUPS`).  It iterates over the keys to look them up in the map `GROUPDEFS`, which is a map from `tstr` to a `tstrlist` (we have to special case lists of tstr's because we can't lock the list value type up front like we can in `tlist`).  When we find a particular element in the list, we run our logic.  Lastly, we have a lst of doubles defined by `GROUPCOEFS` that also are used.
+`class3` takes a list of map keys (`GROUPS`).  It iterates over the keys to look them up in the map `GROUPDEFS`, which is a map from `tstr` to a `tstrlist` (we have to special case lists of `tstr`'s because we can't lock the list value type up front like we can in `tlist`).  When we find a particular element in the list, we run our logic.  Lastly, we have a list of doubles defined by `GROUPCOEFS` that also are used.
 
 Here's what the template instantiation of this would look like:
 
@@ -370,8 +370,8 @@ Ignoring the annotation artifacts, there we have it: `mov eax,0xc` followed by a
 
 In reality, there may never be an opportunity to completely evaluate everything at compile time.  What we hope to provide
 is opportunities for the compiler to optimize beyond what it could if it were presented with logic based on traversing dynamic structures
-at run time.
+at run time.  gcc, at least, is remarkably good at optimization given the right setup.
 
 Perhaps a more practical approach to integrating this style of programming would be to use code generation.  We can still retain our config-driven approach: the code generator can parse JSON config to generate instances of our classes with the parameters set.  At a later stage, we can reduce down the set of parameters to ones that would actually be used in the release build of our code.
 
-Another (as-of-yet unexplored) approach, while more complex, could be more flexible: somewhere use an `ifdef` to switch our behavior from getting config from config files (and our storage of the values to `std::vector`, `std::unordered_map`, etc) to our static parameter list behavior.  This would remove the need for a code-generation stage that needs to be run during make every time the config is changed -- which could be time-consuming during the pre-release phase of development.
+Another (as-of-yet unexplored) approach, while more complex, could be more flexible: somewhere use an `ifdef` to switch our behavior from getting config from config files (and our storage of the values to `std::vector`, `std::unordered_map`, etc) to our static parameter list behavior.  This would remove the need for a code-generation stage that needs to be run during make every time the config is changed -- which could be time-consuming during the pre-release phase of development.  At release time we set the appropriate switch to do everything statically.
